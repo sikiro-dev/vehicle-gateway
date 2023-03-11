@@ -1,6 +1,5 @@
 package com.sikiro.vehiclegateway.models.messages;
 
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,10 +7,16 @@ import lombok.Setter;
 @Setter
 @Getter
 @EqualsAndHashCode
-@AllArgsConstructor
 public abstract class Message {
 
+    private final String id;
+
     private final Type type;
+
+    protected Message(Type type) {
+        this.id = java.util.UUID.randomUUID().toString();
+        this.type = type;
+    }
 
     public enum Type {
         HELLO,

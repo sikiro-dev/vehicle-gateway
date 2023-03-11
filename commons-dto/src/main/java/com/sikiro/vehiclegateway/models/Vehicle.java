@@ -1,15 +1,18 @@
-package com.sikiro.vehiclegatewaytcp.models;
+package com.sikiro.vehiclegateway.models;
 
+import com.sikiro.vehiclegateway.models.Status;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.UUID;
+import lombok.ToString;
+import org.springframework.data.redis.core.RedisHash;
 
 @Getter
 @Setter
+@ToString
+@RedisHash
 public class Vehicle {
 
-    private UUID id;
+    private String id;
 
     private Double latitude;
 

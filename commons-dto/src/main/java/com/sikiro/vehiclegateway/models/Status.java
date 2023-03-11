@@ -1,4 +1,4 @@
-package com.sikiro.vehiclegatewaytcp.models;
+package com.sikiro.vehiclegateway.models;
 
 public enum Status {
     RUNNING,

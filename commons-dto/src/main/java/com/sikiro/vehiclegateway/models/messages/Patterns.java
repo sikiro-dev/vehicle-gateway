@@ -1,4 +1,4 @@
-package com.sikiro.vehiclegatewaytcp.models.messages;
+package com.sikiro.vehiclegateway.models.messages;
 
 import java.util.regex.Pattern;
 

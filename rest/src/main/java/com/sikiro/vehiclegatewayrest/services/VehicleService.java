@@ -1,7 +1,7 @@
 package com.sikiro.vehiclegatewayrest.services;
 
-import com.sikiro.vehiclegatewaytcp.models.Status;
-import com.sikiro.vehiclegatewaytcp.models.Vehicle;
+import com.sikiro.vehiclegateway.models.Status;
+import com.sikiro.vehiclegateway.models.Vehicle;
 
 import java.util.Optional;
 

@@ -1,6 +1,6 @@
-package com.sikiro.vehiclegatewaytcp.models.messages;
+package com.sikiro.vehiclegateway.models.messages;
 
-import com.sikiro.vehiclegatewaytcp.models.Status;
+import com.sikiro.vehiclegateway.models.Status;
 import lombok.Getter;
 import lombok.Setter;
 

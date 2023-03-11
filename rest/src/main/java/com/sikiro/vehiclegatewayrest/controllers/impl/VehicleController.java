@@ -1,9 +1,9 @@
 package com.sikiro.vehiclegatewayrest.controllers.impl;
 
+import com.sikiro.vehiclegateway.models.Status;
+import com.sikiro.vehiclegateway.models.Vehicle;
 import com.sikiro.vehiclegatewayrest.controllers.Controller;
 import com.sikiro.vehiclegatewayrest.services.VehicleService;
-import com.sikiro.vehiclegatewaytcp.models.Status;
-import com.sikiro.vehiclegatewaytcp.models.Vehicle;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

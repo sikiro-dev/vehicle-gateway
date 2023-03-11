@@ -1,6 +1,7 @@
 package vehiclegateway.services.impl;
 
 import org.springframework.stereotype.Service;
+import vehiclegateway.models.Status;
 import vehiclegateway.models.messages.*;
 import vehiclegateway.services.MessageReader;
 
@@ -33,7 +34,7 @@ public class MessageReaderImpl implements MessageReader {
             return new ReportClientMessage(
                     Double.parseDouble(matcher.group(2)),
                     Double.parseDouble(matcher.group(4)),
-                    ReportClientMessage.Status.valueOf(matcher.group(6)),
+                    Status.valueOf(matcher.group(6)),
                     Integer.valueOf(matcher.group(7))
             );
         }

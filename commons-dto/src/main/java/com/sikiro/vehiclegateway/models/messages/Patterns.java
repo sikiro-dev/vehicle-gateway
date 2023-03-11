@@ -22,7 +22,11 @@ public class Patterns {
 
     public static final Pattern HEARTBEAT_CLIENT = Pattern.compile("^PING\\.$");
 
-    public static final String HEARTBEAT_SERVER = "PONG\\.";
+    public static final Pattern FREQUENCY_CLIENT = Pattern.compile("^SURE, I WILL!$");
+
+    public static final String FREQUENCY_SERVER = "KEEP ME POSTED EVERY %d SECONDS.";
+
+    public static final String HEARTBEAT_SERVER = "PONG.";
 
     public static final String DATA_SERVER = "HOW'S IT GOING?";
 
@@ -43,6 +47,8 @@ public class Patterns {
     public static final Pattern GOODBYE_REQUEST = Pattern.compile("^GOTTA GO!$");
 
     public static final Pattern GOODBYE_ACK = Pattern.compile("^SEE YA!$");
+    public static final String GOODBYE_ACK_String = "SEE YA!";
+
 
 
 }

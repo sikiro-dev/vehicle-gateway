@@ -22,6 +22,7 @@ public abstract class Message {
         HELLO,
         HEARTBEAT,
         DATA,
+        FREQUENCY,
         REPORT,
         REPORT_ACK,
         COMMAND,

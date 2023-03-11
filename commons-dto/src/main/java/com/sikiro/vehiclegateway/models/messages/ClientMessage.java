@@ -5,4 +5,5 @@ public abstract class ClientMessage extends Message {
     public ClientMessage(Message.Type type) {
         super(type);
     }
+
 }

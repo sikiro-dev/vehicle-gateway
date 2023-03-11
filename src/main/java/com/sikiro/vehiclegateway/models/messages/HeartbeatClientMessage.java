@@ -7,8 +7,8 @@ import lombok.Setter;
 @Setter
 public class HeartbeatClientMessage extends ClientMessage {
 
-    HeartbeatClientMessage() {
-        super(Type.HEARTBEAT, Patterns.HEARTBEAT_CLIENT);
+    public HeartbeatClientMessage() {
+        super(Type.HEARTBEAT);
     }
 
 }

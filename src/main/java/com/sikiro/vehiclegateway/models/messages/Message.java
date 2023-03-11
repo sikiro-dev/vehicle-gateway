@@ -20,7 +20,8 @@ public abstract class Message {
         REPORT,
         REPORT_ACK,
         COMMAND,
-        GOODBYE,
+        GOODBYE_REQUEST,
+        GOODBYE_ACK,
         ERROR
     }
 

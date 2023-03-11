@@ -16,7 +16,7 @@ public class Patterns {
 
     public static final Pattern UUID = Pattern.compile("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}");
 
-    public static final Pattern HELLO_CLIENT = Pattern.compile("^HELLO I'M DEVICE (" + UUID + ")!$");
+    public static final Pattern HELLO_CLIENT = Pattern.compile("^HELLO, I'M (" + UUID + ")!$");
 
     public static final String HELLO_SERVER = "HI, NICE TO MEET YOU!";
 
@@ -32,7 +32,7 @@ public class Patterns {
 
     public static final Pattern REPORT_CLIENT = Pattern.compile("^(FINE|REPORT). I'M HERE ("
             + COORDINATES + ") (" + COORDINATES + "), "
-            + STATUS + " AND CHARGED AT (" + BATTERY + ") %\\.$");
+            + STATUS + " AND CHARGED AT (" + BATTERY + ")%\\.$");
 
     public static final String REPORT_SERVER = "OK, THANKS!";
 
@@ -40,8 +40,9 @@ public class Patterns {
 
     public static final String COMMAND_SERVER = "HEY YOU, %s!";
 
-    public static final Pattern GOODBYE_CLIENT = Pattern.compile("^SEE YA!$");
+    public static final Pattern GOODBYE_REQUEST = Pattern.compile("^GOTTA GO!$");
 
-    public static final String GOODBYE_SERVER = "GOTTA GO!";
+    public static final Pattern GOODBYE_ACK = Pattern.compile("^SEE YA!$");
+
 
 }

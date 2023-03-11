@@ -9,8 +9,8 @@ public class CommandClientMessage extends ClientMessage {
 
     private final Result result;
 
-    CommandClientMessage(Result result) {
-        super(Type.COMMAND, Patterns.COMMAND_CLIENT);
+    public CommandClientMessage(Result result) {
+        super(Type.COMMAND);
         this.result = result;
     }
 

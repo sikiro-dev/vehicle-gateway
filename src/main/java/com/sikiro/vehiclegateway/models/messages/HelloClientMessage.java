@@ -11,8 +11,8 @@ public class HelloClientMessage extends ClientMessage {
 
     private final UUID deviceId;
 
-    HelloClientMessage(UUID deviceId) {
-        super(Type.HELLO, Patterns.HELLO_CLIENT);
+    public HelloClientMessage(UUID deviceId) {
+        super(Type.HELLO);
         this.deviceId = deviceId;
     }
 

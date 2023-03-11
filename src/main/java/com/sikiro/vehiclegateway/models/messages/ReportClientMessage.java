@@ -7,20 +7,20 @@ import lombok.Setter;
 @Setter
 public class ReportClientMessage extends ClientMessage {
 
-    private final Float latitude;
+    private final Double latitude;
 
-    private final Float longitude;
+    private final Double longitude;
 
     private final Status status;
 
-    private final Integer battery;
+    private final Integer batteryLevel;
 
-    ReportClientMessage(Float latitude, Float longitude, Status status, Integer battery) {
-        super(Type.REPORT, Patterns.REPORT_CLIENT);
+    public ReportClientMessage(Double latitude, Double longitude, Status status, Integer batteryLevel) {
+        super(Type.REPORT);
         this.latitude = latitude;
         this.longitude = longitude;
         this.status = status;
-        this.battery = battery;
+        this.batteryLevel = batteryLevel;
     }
 
     public enum Status {

@@ -2,6 +2,7 @@ package vehiclegateway.models.messages;
 
 import lombok.Getter;
 import lombok.Setter;
+import vehiclegateway.models.Status;
 
 @Getter
 @Setter
@@ -21,11 +22,6 @@ public class ReportClientMessage extends ClientMessage {
         this.longitude = longitude;
         this.status = status;
         this.batteryLevel = batteryLevel;
-    }
-
-    public enum Status {
-        RUNNING,
-        RESTING
     }
 
 }

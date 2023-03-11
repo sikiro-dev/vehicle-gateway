@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
+
+import java.time.Duration;
 
 @RestController
 @RequestMapping("api/vehicle")
@@ -21,8 +24,11 @@ public class VehicleController extends Controller {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Vehicle> getVehicle(@PathVariable String id) {
-        return ResponseEntity.of(vehicleService.getVehicle(id));
+    public Mono<ResponseEntity<Vehicle>> getVehicle(@PathVariable String id) {
+        vehicleService.getUpdate(id);
+        return vehicleService.getVehicle(id)
+                .map(ResponseEntity::ok)
+                .timeout(Duration.ofMillis(3000), Mono.just(ResponseEntity.notFound().build()));
     }
 
     @GetMapping("{id}/frequency/{frequency}")
@@ -33,7 +39,7 @@ public class VehicleController extends Controller {
 
     @GetMapping("{id}/command/{command}")
     public ResponseEntity<Void> sendCommand(@PathVariable String id, @PathVariable String command) {
-        vehicleService.sendCommand(id, Status.valueOf(command));
+        vehicleService.sendCommand(id, Status.fromString(command));
         return ResponseEntity.ok().build();
     }
 

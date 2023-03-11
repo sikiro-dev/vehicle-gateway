@@ -31,10 +31,15 @@ public class ChannelRepository {
         return channelCache.get(key);
     }
 
-    public void remove(String key) { this.channelCache.remove(key); }
-
-    public int size() {
-        return this.channelCache.size();
+    public void remove(String key) {
+        channelCache.remove(key);
     }
 
+    public int size() {
+        return channelCache.size();
+    }
+
+    public boolean containsKey(String key) {
+        return channelCache.containsKey(key);
+    }
 }

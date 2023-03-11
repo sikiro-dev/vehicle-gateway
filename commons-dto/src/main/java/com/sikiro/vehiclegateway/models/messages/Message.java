@@ -11,11 +11,15 @@ public abstract class Message {
 
     private final String id;
 
-    private final Type type;
+    private Type type;
 
     protected Message(Type type) {
-        this.id = java.util.UUID.randomUUID().toString();
+        this();
         this.type = type;
+    }
+
+    protected Message() {
+        this.id = java.util.UUID.randomUUID().toString();
     }
 
     public enum Type {

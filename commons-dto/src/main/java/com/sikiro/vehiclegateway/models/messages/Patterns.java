@@ -32,8 +32,6 @@ public class Patterns {
 
     public static final Pattern REPORT_ACK_CLIENT = Pattern.compile("^SURE, I WILL!$");
 
-    public static final String REPORT_REQUEST_SERVER = "KEEP ME POSTED EVERY %d SECONDS\\.";
-
     public static final Pattern REPORT_CLIENT = Pattern.compile("^(FINE|REPORT). I'M HERE ("
             + COORDINATES + ") (" + COORDINATES + "), "
             + STATUS + " AND CHARGED AT (" + BATTERY + ")%\\.$");
@@ -44,10 +42,12 @@ public class Patterns {
 
     public static final String COMMAND_SERVER = "HEY YOU, %s!";
 
-    public static final Pattern GOODBYE_REQUEST = Pattern.compile("^GOTTA GO!$");
+    public static final String GOODBYE_REQUEST_STRING = "GOTTA GO!";
+    public static final Pattern GOODBYE_REQUEST = Pattern.compile("^" + GOODBYE_REQUEST_STRING + "$");
 
-    public static final Pattern GOODBYE_ACK = Pattern.compile("^SEE YA!$");
-    public static final String GOODBYE_ACK_String = "SEE YA!";
+
+    public static final String GOODBYE_ACK_STRING = "SEE YA!";
+    public static final Pattern GOODBYE_ACK = Pattern.compile("^" + GOODBYE_ACK_STRING + "$");
 
 
 

@@ -15,8 +15,8 @@ public class MessageSenderHandler extends ChannelInboundHandlerAdapter {
 
     private final ChannelRepository channelRepository;
 
-    public void write(ServerMessage serverMessage, String vehicle) {
-        Channel channel = channelRepository.get(vehicle);
+    public void write(ServerMessage serverMessage) {
+        Channel channel = channelRepository.get(serverMessage.getDeviceId());
         if (serverMessage.getType().equals(Message.Type.COMMAND))
             channel.attr(VEHICLE_ATTRIBUTE_KEY).get().setDesiredStatus(serverMessage.getCommand());
         if (channel.isActive())

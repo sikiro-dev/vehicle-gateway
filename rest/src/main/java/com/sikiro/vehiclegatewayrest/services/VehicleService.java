@@ -2,12 +2,13 @@ package com.sikiro.vehiclegatewayrest.services;
 
 import com.sikiro.vehiclegateway.models.Status;
 import com.sikiro.vehiclegateway.models.Vehicle;
-
-import java.util.Optional;
+import reactor.core.publisher.Mono;
 
 public interface VehicleService {
 
-    Optional<Vehicle> getVehicle(String id);
+    Mono<Vehicle> getVehicle(String id);
+
+    void getUpdate(String id);
 
     void sendUpdateFrequency(String id, int frequency);
 

@@ -10,4 +10,13 @@ public enum Status {
     RESTING("REST");
 
     private final String command;
+
+    public static Status fromString(String text) {
+        for (Status b : Status.values()) {
+            if (b.command.equalsIgnoreCase(text)) {
+                return b;
+            }
+        }
+        return null;
+    }
 }

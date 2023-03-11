@@ -1,4 +1,4 @@
-package vehiclegateway.models;
+package com.sikiro.vehiclegatewaytcp.models;
 
 import lombok.Getter;
 import lombok.Setter;

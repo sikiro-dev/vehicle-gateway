@@ -1,4 +1,4 @@
-package vehiclegateway.models.messages;
+package com.sikiro.vehiclegatewaytcp.models.messages;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;

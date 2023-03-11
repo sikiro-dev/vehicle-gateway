@@ -1,8 +1,8 @@
-package vehiclegateway.models.messages;
+package com.sikiro.vehiclegatewaytcp.models.messages;
 
+import com.sikiro.vehiclegatewaytcp.models.Status;
 import lombok.Getter;
 import lombok.Setter;
-import vehiclegateway.models.Status;
 
 @Getter
 @Setter

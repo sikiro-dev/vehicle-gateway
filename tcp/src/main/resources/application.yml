@@ -1,12 +1,5 @@
-spring:
-  data:
-    redis:
-      writer:
-        port: 6379
-        host: redis-writer
-      reader:
-        port: 6380
-        host: redis-reader
+server:
+  port: 8081
 
 netty:
   tcp-port: 8090

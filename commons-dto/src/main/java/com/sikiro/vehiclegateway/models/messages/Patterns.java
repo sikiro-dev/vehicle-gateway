@@ -22,8 +22,6 @@ public class Patterns {
 
     public static final Pattern HEARTBEAT_CLIENT = Pattern.compile("^PING\\.$");
 
-    public static final Pattern FREQUENCY_CLIENT = Pattern.compile("^SURE, I WILL!$");
-
     public static final String FREQUENCY_SERVER = "KEEP ME POSTED EVERY %d SECONDS.";
 
     public static final String HEARTBEAT_SERVER = "PONG.";

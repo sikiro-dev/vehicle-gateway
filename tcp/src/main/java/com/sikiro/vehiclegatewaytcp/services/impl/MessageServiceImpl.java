@@ -25,10 +25,6 @@ public class MessageServiceImpl implements MessageService {
         if (matcher.matches()) {
             return new HeartbeatClientMessage();
         }
-        matcher = Patterns.FREQUENCY_CLIENT.matcher(message);
-        if (matcher.matches()) {
-            return new FrequencyClientMessage();
-        }
         matcher = Patterns.REPORT_ACK_CLIENT.matcher(message);
         if (matcher.matches()) {
             return new ReportAckClientMessage();

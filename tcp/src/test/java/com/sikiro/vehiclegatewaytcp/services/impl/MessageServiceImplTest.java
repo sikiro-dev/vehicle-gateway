@@ -9,7 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class MessageReaderImplTest {
+class MessageServiceImplTest {
 
     @InjectMocks
     private MessageServiceImpl messageService;

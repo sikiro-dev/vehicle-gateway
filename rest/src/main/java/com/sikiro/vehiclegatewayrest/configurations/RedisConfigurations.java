@@ -1,35 +1,50 @@
 package com.sikiro.vehiclegatewayrest.configurations;
 
-import com.sikiro.vehiclegateway.models.Vehicle;
-import com.sikiro.vehiclegateway.models.messages.ServerMessage;
+import com.sikiro.vehiclegateway.models.vehicles.Vehicle;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
-import org.springframework.data.redis.core.ReactiveRedisOperations;
-import org.springframework.data.redis.core.ReactiveRedisTemplate;
-import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.RedisSerializationContext;
-import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.stream.Consumer;
+import org.springframework.data.redis.connection.stream.ObjectRecord;
+import org.springframework.data.redis.connection.stream.ReadOffset;
+import org.springframework.data.redis.connection.stream.StreamOffset;
+import org.springframework.data.redis.stream.StreamListener;
+import org.springframework.data.redis.stream.StreamMessageListenerContainer;
+import org.springframework.data.redis.stream.Subscription;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.time.Duration;
 
 @Configuration
+@RequiredArgsConstructor
 public class RedisConfigurations {
 
-    @Bean
-    public ReactiveRedisOperations<String, ServerMessage> messageTemplate(LettuceConnectionFactory lettuceConnectionFactory){
-        RedisSerializer<ServerMessage> valueSerializer = new Jackson2JsonRedisSerializer<>(ServerMessage.class);
-        RedisSerializationContext<String, ServerMessage> serializationContext = RedisSerializationContext.<String, ServerMessage>newSerializationContext(RedisSerializer.string())
-                .value(valueSerializer)
-                .build();
-        return new ReactiveRedisTemplate<>(lettuceConnectionFactory, serializationContext);
-    }
+    private final StreamListener<String, ObjectRecord<String, Vehicle>> streamListener;
+
+    @Value("${redis.vehicles_channel:vehicles}")
+    private String vehiclesChannel;
 
     @Bean
-    public ReactiveRedisOperations<String, Vehicle> vehicleTemplate(LettuceConnectionFactory lettuceConnectionFactory){
-        RedisSerializer<Vehicle> valueSerializer = new Jackson2JsonRedisSerializer<>(Vehicle.class);
-        RedisSerializationContext<String, Vehicle> serializationContext = RedisSerializationContext.<String, Vehicle>newSerializationContext(RedisSerializer.string())
-                .value(valueSerializer)
-                .build();
-        return new ReactiveRedisTemplate<>(lettuceConnectionFactory, serializationContext);
+    public Subscription subscription(RedisConnectionFactory redisConnectionFactory) throws UnknownHostException {
+
+        StreamMessageListenerContainer.StreamMessageListenerContainerOptions<String, ObjectRecord<String, Vehicle>> options =
+                StreamMessageListenerContainer.StreamMessageListenerContainerOptions
+                        .builder()
+                        .pollTimeout(Duration.ofSeconds(1))
+                        .targetType(Vehicle.class)
+                        .build();
+        StreamMessageListenerContainer<String, ObjectRecord<String, Vehicle>> listenerContainer = StreamMessageListenerContainer
+                .create(redisConnectionFactory, options);
+        Subscription subscription = listenerContainer.receive(
+                Consumer.from(vehiclesChannel, InetAddress.getLocalHost().getHostName()),
+                StreamOffset.create(vehiclesChannel, ReadOffset.lastConsumed()),
+                streamListener);
+        listenerContainer.start();
+        return subscription;
     }
+
 
 }

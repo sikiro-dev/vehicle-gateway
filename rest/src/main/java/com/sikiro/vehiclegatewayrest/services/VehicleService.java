@@ -1,7 +1,7 @@
 package com.sikiro.vehiclegatewayrest.services;
 
-import com.sikiro.vehiclegateway.models.Status;
-import com.sikiro.vehiclegateway.models.Vehicle;
+import com.sikiro.vehiclegateway.models.vehicles.Status;
+import com.sikiro.vehiclegateway.models.vehicles.Vehicle;
 import reactor.core.publisher.Mono;
 
 public interface VehicleService {

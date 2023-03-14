@@ -1,6 +1,6 @@
 package com.sikiro.vehiclegatewaytcp.services.impl;
 
-import com.sikiro.vehiclegateway.models.Status;
+import com.sikiro.vehiclegateway.models.vehicles.Status;
 import com.sikiro.vehiclegateway.models.messages.*;
 import com.sikiro.vehiclegatewaytcp.services.MessageService;
 import org.springframework.stereotype.Service;

@@ -1,9 +1,10 @@
 package com.sikiro.vehiclegatewayrest.controllers.impl;
 
-import com.sikiro.vehiclegateway.models.Status;
-import com.sikiro.vehiclegateway.models.Vehicle;
+import com.sikiro.vehiclegateway.models.vehicles.Status;
+import com.sikiro.vehiclegateway.models.vehicles.Vehicle;
 import com.sikiro.vehiclegatewayrest.controllers.Controller;
 import com.sikiro.vehiclegatewayrest.services.VehicleService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,13 +18,10 @@ import java.time.Duration;
 @Slf4j
 @RestController
 @RequestMapping("api/vehicle")
+@RequiredArgsConstructor
 public class VehicleController extends Controller {
 
     private final VehicleService vehicleService;
-
-    public VehicleController(VehicleService vehicleService) {
-        this.vehicleService = vehicleService;
-    }
 
     @GetMapping("{id}")
     public Mono<ResponseEntity<Vehicle>> getVehicle(@PathVariable String id) {

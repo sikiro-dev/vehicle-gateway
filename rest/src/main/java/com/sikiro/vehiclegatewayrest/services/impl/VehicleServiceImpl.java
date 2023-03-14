@@ -1,7 +1,7 @@
 package com.sikiro.vehiclegatewayrest.services.impl;
 
-import com.sikiro.vehiclegateway.models.Status;
-import com.sikiro.vehiclegateway.models.Vehicle;
+import com.sikiro.vehiclegateway.models.vehicles.Status;
+import com.sikiro.vehiclegateway.models.vehicles.Vehicle;
 import com.sikiro.vehiclegateway.models.messages.Patterns;
 import com.sikiro.vehiclegateway.models.messages.ServerMessage;
 import com.sikiro.vehiclegatewayrest.services.VehicleService;

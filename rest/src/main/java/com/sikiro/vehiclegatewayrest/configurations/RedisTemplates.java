@@ -1,8 +1,7 @@
-package com.sikiro.vehiclegatewaytcp.configurations;
+package com.sikiro.vehiclegatewayrest.configurations;
 
-import com.sikiro.vehiclegateway.models.vehicles.Vehicle;
 import com.sikiro.vehiclegateway.models.messages.ServerMessage;
-import com.sikiro.vehiclegateway.models.webhooks.Webhook;
+import com.sikiro.vehiclegateway.models.vehicles.Vehicle;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
@@ -13,8 +12,7 @@ import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.RedisSerializer;
 
 @Configuration
-public class RedisConfigurations {
-
+public class RedisTemplates {
 
     @Bean
     public ReactiveRedisOperations<String, ServerMessage> messageTemplate(LettuceConnectionFactory lettuceConnectionFactory) {
@@ -33,20 +31,5 @@ public class RedisConfigurations {
                 .build();
         return new ReactiveRedisTemplate<>(lettuceConnectionFactory, serializationContext);
     }
-
-    @Bean
-    public ReactiveRedisOperations<String, Webhook> webhookTemplate(LettuceConnectionFactory lettuceConnectionFactory) {
-        RedisSerializer<Webhook> valueSerializer = new Jackson2JsonRedisSerializer<>(Webhook.class);
-        RedisSerializationContext<String, Webhook> serializationContext = RedisSerializationContext.<String, Webhook>newSerializationContext(RedisSerializer.string())
-                .value(valueSerializer)
-                .build();
-        return new ReactiveRedisTemplate<>(lettuceConnectionFactory, serializationContext);
-    }
-
-    @Bean
-    public ReactiveRedisOperations<String, String> stringTemplate(LettuceConnectionFactory lettuceConnectionFactory) {
-        return new ReactiveRedisTemplate<>(lettuceConnectionFactory, RedisSerializationContext.string());
-    }
-
 
 }

@@ -1,6 +1,6 @@
 package com.sikiro.vehiclegatewaytcp.services.impl;
 
-import com.sikiro.vehiclegateway.models.Status;
+import com.sikiro.vehiclegateway.models.vehicles.Status;
 import com.sikiro.vehiclegateway.models.messages.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

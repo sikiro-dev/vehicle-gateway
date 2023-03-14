@@ -7,7 +7,7 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import static com.sikiro.vehiclegateway.models.Vehicle.VEHICLE_ATTRIBUTE_KEY;
+import static com.sikiro.vehiclegatewaytcp.server.ChannelRepository.VEHICLE_ATTRIBUTE_KEY;
 
 @Component
 @RequiredArgsConstructor

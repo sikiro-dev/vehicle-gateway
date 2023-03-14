@@ -1,6 +1,6 @@
 package com.sikiro.vehiclegatewaytcp.services;
 
-import com.sikiro.vehiclegateway.models.Vehicle;
+import com.sikiro.vehiclegateway.models.vehicles.Vehicle;
 
 public interface PublisherService {
 

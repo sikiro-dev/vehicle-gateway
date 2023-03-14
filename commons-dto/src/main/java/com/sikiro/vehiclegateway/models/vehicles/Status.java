@@ -1,4 +1,4 @@
-package com.sikiro.vehiclegateway.models;
+package com.sikiro.vehiclegateway.models.vehicles;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

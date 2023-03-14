@@ -22,12 +22,12 @@ public class SubscriberServiceImpl implements SubscriberService {
     private final MessageSenderHandler messageSenderHandler;
 
     @Value("${redis.server_messages_channel:server_messages}")
-    private String channel;
+    private String messageChannel;
 
     @Override
     @PostConstruct
     public void subscribe() {
-        messageTemplate.listenToChannel(channel)
+        messageTemplate.listenToChannel(messageChannel)
                 .map(ReactiveSubscription.Message::getMessage)
                 .filter(message -> channelRepository.containsKey(message.getDeviceId()))
                 .subscribe(message -> {
@@ -35,4 +35,5 @@ public class SubscriberServiceImpl implements SubscriberService {
                     messageSenderHandler.write(message);
                 });
     }
+
 }

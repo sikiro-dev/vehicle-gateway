@@ -1,7 +1,7 @@
-package com.sikiro.vehiclegateway.models;
+package com.sikiro.vehiclegateway.models.vehicles;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.netty.util.AttributeKey;
+import com.sikiro.vehiclegateway.models.messages.Message;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -10,8 +10,6 @@ import lombok.ToString;
 @Setter
 @ToString
 public class Vehicle {
-    public static final AttributeKey<Vehicle> VEHICLE_ATTRIBUTE_KEY = AttributeKey.newInstance("VEHICLE");
-
 
     private String id;
 
@@ -21,8 +19,12 @@ public class Vehicle {
 
     private Status status;
 
+    private Integer batteryLevel;
+
     @JsonIgnore
     private Status desiredStatus;
 
-    private Integer batteryLevel;
+    @JsonIgnore
+    private Message.Type lastMessage;
+
 }

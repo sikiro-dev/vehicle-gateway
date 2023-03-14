@@ -1,6 +1,6 @@
 package com.sikiro.vehiclegateway.models.messages;
 
-import com.sikiro.vehiclegateway.models.Status;
+import com.sikiro.vehiclegateway.models.vehicles.Status;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

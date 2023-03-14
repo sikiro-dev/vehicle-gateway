@@ -20,8 +20,8 @@ public class VehicleConsumer implements StreamListener<String, ObjectRecord<Stri
     @Override
     public void onMessage(ObjectRecord<String, Vehicle> message) {
         log.info("Received message: {}", message);
-        webhookRepository.findById(message.getValue().getId())
-                .ifPresent(webhook -> webhookService.sendUpdate(webhook, message.getValue()));
+        webhookRepository.findAllByVehicleId(message.getValue().getId())
+                .forEach(webhook -> webhookService.sendUpdate(webhook, message.getValue()));
     }
 
 }

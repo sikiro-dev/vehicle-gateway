@@ -3,35 +3,20 @@ package com.sikiro.vehiclegateway.models.webhooks;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.index.Indexed;
 
 @Getter
 @Setter
 @ToString
-@RedisHash
+@RedisHash("webhook")
 public class Webhook {
 
-    @Id
+    private String id;
+
+    @Indexed
     private String vehicleId;
 
     private String url;
 
-
-    @Override
-    public int hashCode() {
-        return vehicleId.hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        } else if (obj == this) {
-            return true;
-        } else if (obj instanceof Webhook other) {
-            return other.vehicleId.equals(this.vehicleId);
-        }
-        return false;
-    }
 }

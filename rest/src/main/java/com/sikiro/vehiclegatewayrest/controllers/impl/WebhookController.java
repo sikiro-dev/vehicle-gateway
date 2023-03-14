@@ -18,7 +18,7 @@ public class WebhookController extends Controller {
 
     @PostMapping
     public ResponseEntity<Void> createWebhook(@RequestBody Webhook webhook) {
-        log.info("Request create webhook for: {}", webhook);
+        log.info("Request create webhook for: {}", webhook.getVehicleId());
         webhookService.createWebhook(webhook);
         return ResponseEntity.ok().build();
     }

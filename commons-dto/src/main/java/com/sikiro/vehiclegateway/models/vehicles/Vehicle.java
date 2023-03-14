@@ -1,14 +1,17 @@
 package com.sikiro.vehiclegateway.models.vehicles;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sikiro.vehiclegateway.models.messages.Message;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.data.redis.core.RedisHash;
+
+import java.util.List;
 
 @Getter
 @Setter
 @ToString
+@RedisHash
 public class Vehicle {
 
     private String id;
@@ -25,6 +28,6 @@ public class Vehicle {
     private Status desiredStatus;
 
     @JsonIgnore
-    private Message.Type lastMessage;
+    private List<Event> lastEvents;
 
 }

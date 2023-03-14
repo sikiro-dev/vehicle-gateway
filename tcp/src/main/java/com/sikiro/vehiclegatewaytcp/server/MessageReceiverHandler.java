@@ -1,6 +1,7 @@
 package com.sikiro.vehiclegatewaytcp.server;
 
 import com.sikiro.vehiclegateway.models.messages.*;
+import com.sikiro.vehiclegateway.models.vehicles.Event;
 import com.sikiro.vehiclegateway.models.vehicles.Vehicle;
 import com.sikiro.vehiclegatewaytcp.services.MessageService;
 import com.sikiro.vehiclegatewaytcp.services.PublisherService;
@@ -11,6 +12,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.sikiro.vehiclegatewaytcp.server.ChannelRepository.VEHICLE_ATTRIBUTE_KEY;
@@ -67,7 +71,7 @@ public class MessageReceiverHandler extends ChannelInboundHandlerAdapter {
     private void handleHello(ChannelHandlerContext ctx, HelloClientMessage helloClientMessage) {
         Vehicle vehicle = new Vehicle();
         vehicle.setId(helloClientMessage.getDeviceId());
-        vehicle.setLastMessage(Message.Type.HELLO);
+        vehicle.setLastEvents(List.of(Event.CONNECTED));
         ctx.channel().attr(VEHICLE_ATTRIBUTE_KEY).set(vehicle);
         channelRepository.put(vehicle.getId(), ctx.channel());
         publisherService.publish(vehicle);
@@ -76,7 +80,7 @@ public class MessageReceiverHandler extends ChannelInboundHandlerAdapter {
     private void handleGoodbye(ChannelHandlerContext ctx, ClientMessage clientMessage, ServerMessage serverMessage) {
         Optional.ofNullable(ctx.channel().attr(VEHICLE_ATTRIBUTE_KEY).get()).ifPresent(
                 vehicle -> {
-                    vehicle.setLastMessage(Message.Type.GOODBYE_ACK);
+                    vehicle.setLastEvents(List.of(Event.DISCONNECTED));
                     publisherService.publish(vehicle);
                 });
         if (clientMessage instanceof GoodbyeRequestClientMessage && serverMessage != null)
@@ -86,11 +90,22 @@ public class MessageReceiverHandler extends ChannelInboundHandlerAdapter {
 
     private void handleReport(ChannelHandlerContext ctx, ReportClientMessage reportClientMessage) {
         Vehicle vehicle = ctx.channel().attr(VEHICLE_ATTRIBUTE_KEY).get();
+        List<Event> lastEvents = new ArrayList<>();
+        if (reportClientMessage.getStatus() != vehicle.getStatus()) {
+            lastEvents.add(Event.STATUS_CHANGED);
+        }
+        if (!Objects.equals(reportClientMessage.getBatteryLevel(), vehicle.getBatteryLevel())) {
+            lastEvents.add(Event.BATTERY_LEVEL_CHANGED);
+        }
+        if (!Objects.equals(reportClientMessage.getLatitude(), vehicle.getLatitude())
+                || !Objects.equals(reportClientMessage.getLongitude(), vehicle.getLongitude())) {
+            lastEvents.add(Event.LOCATION_CHANGED);
+        }
         vehicle.setLatitude(reportClientMessage.getLatitude());
         vehicle.setLongitude(reportClientMessage.getLongitude());
         vehicle.setStatus(reportClientMessage.getStatus());
         vehicle.setBatteryLevel(reportClientMessage.getBatteryLevel());
-        vehicle.setLastMessage(Message.Type.REPORT);
+        vehicle.setLastEvents(lastEvents);
         publisherService.publish(vehicle);
     }
 
@@ -98,7 +113,7 @@ public class MessageReceiverHandler extends ChannelInboundHandlerAdapter {
         Vehicle vehicle = ctx.channel().attr(VEHICLE_ATTRIBUTE_KEY).get();
         if (commandClientMessage.getResult().equals(CommandClientMessage.Result.SUCCESS)) {
             vehicle.setStatus(vehicle.getDesiredStatus());
-            vehicle.setLastMessage(Message.Type.COMMAND);
+            vehicle.setLastEvents(List.of(Event.STATUS_CHANGED));
             publisherService.publish(vehicle);
         }
     }

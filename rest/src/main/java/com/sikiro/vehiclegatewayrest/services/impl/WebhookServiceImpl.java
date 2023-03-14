@@ -1,6 +1,7 @@
 package com.sikiro.vehiclegatewayrest.services.impl;
 
 import com.sikiro.vehiclegateway.models.vehicles.Vehicle;
+import com.sikiro.vehiclegateway.models.vehicles.VehicleEvent;
 import com.sikiro.vehiclegateway.models.webhooks.Webhook;
 import com.sikiro.vehiclegatewayrest.repository.WebhookRepository;
 import com.sikiro.vehiclegatewayrest.services.WebhookService;
@@ -8,6 +9,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+
+import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
@@ -20,13 +24,17 @@ public class WebhookServiceImpl implements WebhookService {
 
     @Override
     public void sendUpdate(Webhook webhook, Vehicle vehicle) {
-        log.info("Sending update to: {}", webhook);
+        log.info("Sending update to: {}", webhook.getId());
+        List<VehicleEvent> vehicleEvents = VehicleEvent.from(vehicle);
         webClient.post()
                 .uri(webhook.getUrl())
-                .bodyValue(vehicle)
+                .bodyValue(vehicleEvents)
                 .retrieve()
-                .bodyToMono(Void.class)
-                .subscribe();
+                .bodyToMono(Object.class)
+                .subscribe(
+                        success -> log.info("Successfully sent update to: {}, with updates {}", webhook.getId(), vehicleEvents),
+                        error -> log.error("Error sending update to: {}", webhook.getId())
+                );
     }
 
     @Override

@@ -15,8 +15,6 @@ import org.springframework.stereotype.Component;
 public class MessageChannelInitializer extends ChannelInitializer<SocketChannel> {
 
     private final MessageReceiverHandler messageReceiverHandler;
-    private final StringEncoder stringEncoder = new StringEncoder();
-    private final StringDecoder stringDecoder = new StringDecoder();
 
     @Override
     protected void initChannel(SocketChannel socketChannel) {
@@ -24,8 +22,8 @@ public class MessageChannelInitializer extends ChannelInitializer<SocketChannel>
 
         pipeline.addLast(new DelimiterBasedFrameDecoder(1024 * 1024, Delimiters.lineDelimiter()));
 
-        pipeline.addLast(stringDecoder);
-        pipeline.addLast(stringEncoder);
+        pipeline.addLast(new StringDecoder());
+        pipeline.addLast(new StringEncoder());
         pipeline.addLast(messageReceiverHandler);
     }
 }

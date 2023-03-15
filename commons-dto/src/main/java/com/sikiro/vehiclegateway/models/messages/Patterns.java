@@ -7,6 +7,7 @@ public class Patterns {
         throw new IllegalStateException("Utility class");
     }
 
+
     private static final String COORDINATES = "-?\\d+(\\.\\d+)?";
 
     private static final String STATUS = "(RESTING|RUNNING)";
@@ -29,7 +30,7 @@ public class Patterns {
     public static final String FREQUENCY_SERVER = "KEEP ME POSTED EVERY %d SECONDS.";
 
     public static final String FREQUENCY_CLIENT = "SURE, I WILL!";
-    
+
     public static final String HEARTBEAT_SERVER = "PONG.";
 
     public static final String DATA_CLIENT = "FINE. " + INFO;
@@ -45,7 +46,7 @@ public class Patterns {
     public static final String COMMAND_SERVER = "HEY YOU, %s!";
 
     public static final String GOODBYE_REQUEST = "GOTTA GO!";
-    
+
     public static final String GOODBYE_ACK = "SEE YA!";
 
     public static final String UNKNOWN = "I DON'T KNOW YOU!";

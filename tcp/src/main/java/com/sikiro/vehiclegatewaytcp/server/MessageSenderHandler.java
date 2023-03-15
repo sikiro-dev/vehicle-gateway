@@ -6,7 +6,7 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import static com.sikiro.vehiclegatewaytcp.server.ChannelRepository.VEHICLE_ATTRIBUTE_KEY;
+import static com.sikiro.vehiclegatewaytcp.server.ChannelRepository.MESSAGE_ATTRIBUTE_KEY;
 
 @Component
 @RequiredArgsConstructor
@@ -16,8 +16,7 @@ public class MessageSenderHandler extends ChannelInboundHandlerAdapter {
 
     public void write(Message serverMessage) {
         Channel channel = channelRepository.get(serverMessage.getData().getId());
-        if (serverMessage.getType().equals(Message.Type.COMMAND))
-            channel.attr(VEHICLE_ATTRIBUTE_KEY).get().setDesiredStatus(serverMessage.getData().getDesiredStatus());
+        channel.attr(MESSAGE_ATTRIBUTE_KEY).set(serverMessage);
         if (channel.isActive())
             channel.writeAndFlush(serverMessage.getContent() + "\r\n");
     }

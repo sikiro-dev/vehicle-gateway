@@ -1,10 +1,10 @@
 package com.sikiro.vehiclegatewaytcp.configurations;
 
+import com.sikiro.vehiclegateway.models.messages.Message;
 import com.sikiro.vehiclegateway.models.vehicles.Vehicle;
 import com.sikiro.vehiclegateway.models.webhooks.Webhook;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.ReactiveRedisOperations;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;

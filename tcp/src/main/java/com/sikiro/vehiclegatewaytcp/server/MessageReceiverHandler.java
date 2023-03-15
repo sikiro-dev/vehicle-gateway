@@ -1,6 +1,7 @@
 package com.sikiro.vehiclegatewaytcp.server;
 
-import com.sikiro.vehiclegateway.models.messages.*;
+import com.sikiro.vehiclegateway.models.messages.Message;
+import com.sikiro.vehiclegateway.models.messages.Patterns;
 import com.sikiro.vehiclegateway.models.vehicles.CommandResult;
 import com.sikiro.vehiclegateway.models.vehicles.Event;
 import com.sikiro.vehiclegateway.models.vehicles.Vehicle;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import static com.sikiro.vehiclegatewaytcp.server.ChannelRepository.MESSAGE_ATTRIBUTE_KEY;
 import static com.sikiro.vehiclegatewaytcp.server.ChannelRepository.VEHICLE_ATTRIBUTE_KEY;
 
 @Component
@@ -30,7 +32,6 @@ public class MessageReceiverHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        log.info("Received message");
         String stringMessage = (String) msg;
 
         if (stringMessage.isEmpty())
@@ -45,7 +46,7 @@ public class MessageReceiverHandler extends ChannelInboundHandlerAdapter {
             handleHello(ctx, clientMessage);
         } else if (clientMessage.getType().equals(Message.Type.GOODBYE_ACK) || clientMessage.getType().equals(Message.Type.GOODBYE_REQUEST)) {
             handleGoodbye(ctx, clientMessage, serverMessage);
-        } else if (clientMessage.getType().equals(Message.Type.REPORT)) {
+        } else if (clientMessage.getType() == Message.Type.REPORT || clientMessage.getType() == Message.Type.DATA) {
             handleReport(ctx, clientMessage);
         } else if (clientMessage.getType().equals(Message.Type.COMMAND)) {
             handleCommand(ctx, clientMessage);
@@ -54,16 +55,23 @@ public class MessageReceiverHandler extends ChannelInboundHandlerAdapter {
         Optional.ofNullable(serverMessage).ifPresent(m -> ctx.writeAndFlush(m.getContent() + "\r\n"));
     }
 
-    private static boolean handleExceptions(ChannelHandlerContext ctx, Message clientMessage) {
+    private boolean handleExceptions(ChannelHandlerContext ctx, Message clientMessage) {
+        Message previousMessage = ctx.channel().attr(MESSAGE_ATTRIBUTE_KEY).get();
+        if (previousMessage != null && previousMessage.getType() == Message.Type.GOODBYE_REQUEST &&
+                clientMessage.getType() != Message.Type.GOODBYE_ACK) {
+            ctx.writeAndFlush(Patterns.MUST_GO + "\r\n");
+            channelInactive(ctx);
+            throw new RuntimeException("must go!");
+        }
         if (!(clientMessage.getType().equals(Message.Type.HELLO) ||
                 clientMessage.getType().equals(Message.Type.GOODBYE_ACK) ||
                 clientMessage.getType().equals(Message.Type.GOODBYE_REQUEST)) &&
                 ctx.channel().attr(VEHICLE_ATTRIBUTE_KEY).get() == null) {
-            ctx.writeAndFlush("I DON'T KNOW YOU!\r\n");
+            ctx.writeAndFlush(Patterns.UNKNOWN + "\r\n");
             return true;
         }
         if (clientMessage.getType().equals(Message.Type.HELLO) && ctx.channel().attr(VEHICLE_ATTRIBUTE_KEY).get() != null) {
-            ctx.writeAndFlush("I ALREADY KNOW YOU!\r\n");
+            ctx.writeAndFlush(Patterns.ALREADY_KNOWN + "\r\n");
             return true;
         }
         return false;
@@ -79,18 +87,31 @@ public class MessageReceiverHandler extends ChannelInboundHandlerAdapter {
     }
 
     private void handleGoodbye(ChannelHandlerContext ctx, Message clientMessage, Message serverMessage) {
+        Message previousMessage = ctx.channel().attr(MESSAGE_ATTRIBUTE_KEY).get();
+        if (previousMessage != null &&
+                previousMessage.getType() != Message.Type.GOODBYE_REQUEST
+                && clientMessage.getType() == Message.Type.GOODBYE_ACK) {
+            ctx.writeAndFlush(Patterns.UNEXPECTED_MESSAGE + "\r\n");
+        }
         Optional.ofNullable(ctx.channel().attr(VEHICLE_ATTRIBUTE_KEY).get()).ifPresent(
                 vehicle -> {
                     vehicle.setLastEvents(List.of(Event.DISCONNECTED));
                     publisherService.publish(vehicle);
                 });
-        if (clientMessage.getType().equals(Message.Type.GOODBYE_REQUEST)  && serverMessage != null)
+        if (clientMessage.getType().equals(Message.Type.GOODBYE_REQUEST) && serverMessage != null)
             ctx.writeAndFlush(serverMessage.getContent() + "\r\n");
         channelInactive(ctx);
     }
 
     private void handleReport(ChannelHandlerContext ctx, Message reportClientMessage) {
         Vehicle vehicle = ctx.channel().attr(VEHICLE_ATTRIBUTE_KEY).get();
+        if (reportClientMessage.getType() == Message.Type.DATA) {
+            Message message = ctx.channel().attr(MESSAGE_ATTRIBUTE_KEY).get();
+            if (message != null && message.getType().equals(Message.Type.DATA)) {
+                ctx.writeAndFlush(Patterns.UNEXPECTED_MESSAGE + "\r\n");
+                return;
+            }
+        }
         List<Event> lastEvents = new ArrayList<>();
         if (reportClientMessage.getData().getStatus() != vehicle.getStatus()) {
             lastEvents.add(Event.STATUS_CHANGED);
@@ -112,8 +133,13 @@ public class MessageReceiverHandler extends ChannelInboundHandlerAdapter {
 
     private void handleCommand(ChannelHandlerContext ctx, Message commandClientMessage) {
         Vehicle vehicle = ctx.channel().attr(VEHICLE_ATTRIBUTE_KEY).get();
-        if (commandClientMessage.getData().getLastCommandResult().equals(CommandResult.SUCCESS)) {
-            vehicle.setStatus(vehicle.getDesiredStatus());
+        Message previousMessage = ctx.channel().attr(MESSAGE_ATTRIBUTE_KEY).get();
+        if (previousMessage == null || !previousMessage.getType().equals(Message.Type.COMMAND)) {
+            ctx.writeAndFlush(Patterns.UNEXPECTED_MESSAGE + "\r\n");
+            return;
+        }
+        if (CommandResult.fromString(commandClientMessage.getContent()) == CommandResult.SUCCESS) {
+            vehicle.setStatus(previousMessage.getData().getStatus());
             vehicle.setLastEvents(List.of(Event.STATUS_CHANGED));
             publisherService.publish(vehicle);
         }
@@ -121,7 +147,8 @@ public class MessageReceiverHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        ctx.writeAndFlush(cause.getMessage() + "\r\n");
+        if (ctx.channel().isActive())
+            ctx.writeAndFlush(cause.getMessage() + "\r\n");
     }
 
     @Override

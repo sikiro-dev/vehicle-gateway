@@ -25,12 +25,6 @@ public class Vehicle {
     private Integer batteryLevel;
 
     @JsonIgnore
-    private Status desiredStatus;
-
-    @JsonIgnore
     private List<Event> lastEvents;
-
-    @JsonIgnore
-    private CommandResult lastCommandResult;
 
 }

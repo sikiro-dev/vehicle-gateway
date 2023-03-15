@@ -1,13 +1,11 @@
 package com.sikiro.vehiclegateway.models.messages;
 
-import com.sikiro.vehiclegateway.models.vehicles.CommandResult;
 import com.sikiro.vehiclegateway.models.vehicles.Status;
 import com.sikiro.vehiclegateway.models.vehicles.Vehicle;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.apache.logging.log4j.util.Strings;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,6 +17,8 @@ import static com.sikiro.vehiclegateway.models.messages.Patterns.*;
 @EqualsAndHashCode
 public class Message {
 
+    private Side side;
+
     private Type type;
 
     private Vehicle data;
@@ -29,18 +29,34 @@ public class Message {
         Message message = new Message();
         Vehicle vehicle = new Vehicle();
         if (type == Type.COMMAND) {
-            vehicle.setDesiredStatus(Status.fromString(content));
+            vehicle.setStatus(Status.fromString(content));
         }
         vehicle.setId(id);
+        message.setSide(Side.SERVER);
         message.setType(type);
         message.setData(vehicle);
         message.setContent(content);
         return message;
     }
 
+    private static Message of(Side side, Type type) {
+        Message message = new Message();
+        message.side = side;
+        message.type = type;
+        if (side.equals(Side.SERVER)) {
+            message.content = type.getServer();
+        } else {
+            message.content = type.getClient();
+        }
+        return message;
+    }
+
     public static Message response(Message message) {
-        if (message.type.canResponse) {
-            return fromServer(message.type, message.type.server, message.data.getId());
+        if (message.type == Type.GOODBYE_REQUEST) {
+            return Message.of(Side.not(message.side), Type.GOODBYE_ACK);
+        }
+        if (Side.not(message.side) == message.type.responseSide) {
+            return Message.of(Side.not(message.side), message.type);
         }
         return null;
     }
@@ -49,13 +65,14 @@ public class Message {
         for (Type type : Type.values()) {
             if (content.matches(type.getClient())) {
                 Message message = new Message();
+                message.setSide(Side.CLIENT);
                 message.setType(type);
                 message.setData(parseData(content, type));
                 message.setContent(content);
                 return message;
             }
         }
-        throw new IllegalArgumentException("Unknown message type");
+        throw new IllegalArgumentException(UNKNOWN_MESSAGE);
     }
 
     private static Vehicle parseData(String body, Type type) {
@@ -65,34 +82,46 @@ public class Message {
             switch (type) {
                 case HELLO -> vehicle.setId(matcher.group(1));
                 case REPORT -> {
-                    vehicle.setLatitude(Double.parseDouble(matcher.group(2)));
-                    vehicle.setLongitude(Double.parseDouble(matcher.group(4)));
-                    vehicle.setStatus(Status.valueOf(matcher.group(6)));
-                    vehicle.setBatteryLevel(Integer.valueOf(matcher.group(7)));
+                    vehicle.setLatitude(Double.parseDouble(matcher.group(1)));
+                    vehicle.setLongitude(Double.parseDouble(matcher.group(3)));
+                    vehicle.setStatus(Status.valueOf(matcher.group(5)));
+                    vehicle.setBatteryLevel(Integer.valueOf(matcher.group(6)));
                 }
-                case COMMAND -> vehicle.setLastCommandResult(CommandResult.fromString(matcher.group(1)));
             }
         }
         return vehicle;
     }
 
-
     @RequiredArgsConstructor
     @Getter
     public enum Type {
-        HELLO(HELLO_CLIENT, HELLO_SERVER, true),
-        HEARTBEAT(HEARTBEAT_CLIENT, HEARTBEAT_SERVER, true),
-        DATA(Strings.EMPTY, DATA_SERVER, false),
-        FREQUENCY(FREQUENCY_CLIENT, FREQUENCY_SERVER, false),
-        REPORT(REPORT_CLIENT, REPORT_SERVER, true),
-        COMMAND(COMMAND_CLIENT, COMMAND_SERVER, false),
-        GOODBYE_REQUEST(Patterns.GOODBYE_REQUEST, Patterns.GOODBYE_REQUEST, true),
-        GOODBYE_ACK(Patterns.GOODBYE_ACK, Patterns.GOODBYE_ACK, false);
+        HELLO(HELLO_CLIENT, HELLO_SERVER, Side.SERVER),
+        HEARTBEAT(HEARTBEAT_CLIENT, HEARTBEAT_SERVER, Side.SERVER),
+        DATA(DATA_CLIENT, DATA_SERVER, Side.CLIENT),
+        FREQUENCY(FREQUENCY_CLIENT, FREQUENCY_SERVER, Side.CLIENT),
+        REPORT(REPORT_CLIENT, REPORT_SERVER, Side.SERVER),
+        COMMAND(COMMAND_CLIENT, COMMAND_SERVER, Side.CLIENT),
+        GOODBYE_REQUEST(Patterns.GOODBYE_REQUEST, Patterns.GOODBYE_REQUEST, Side.BOTH),
+        GOODBYE_ACK(Patterns.GOODBYE_ACK, Patterns.GOODBYE_ACK, null);
 
         private final String client;
         private final String server;
-        private final boolean canResponse;
+        private final Side responseSide;
 
+    }
+
+    public enum Side {
+        CLIENT,
+        SERVER,
+        BOTH;
+
+        public static Side not(Side side) {
+            if (side.equals(CLIENT))
+                return SERVER;
+            if (side.equals(SERVER))
+                return CLIENT;
+            return BOTH;
+        }
     }
 
 }

@@ -7,13 +7,18 @@ public class Patterns {
         throw new IllegalStateException("Utility class");
     }
 
-    public static final String COORDINATES = "-?\\d+(\\.\\d+)?";
+    private static final String COORDINATES = "-?\\d+(\\.\\d+)?";
 
-    public static final String STATUS = "(RESTING|RUNNING)";
+    private static final String STATUS = "(RESTING|RUNNING)";
 
-    public static final String BATTERY = "[1-9]|[1-9][0-9]|(100)";
+    private static final String BATTERY = "[1-9]|[1-9][0-9]|(100)";
 
-    public static final String UUID = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
+    private static final String UUID = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
+
+    private static final String INFO = "I'M HERE ("
+            + COORDINATES + ") (" + COORDINATES + "), "
+            + STATUS + " AND CHARGED AT (" + BATTERY + ")%\\.";
+
 
     public static final String HELLO_CLIENT = "HELLO, I'M (" + UUID + ")!";
 
@@ -27,11 +32,11 @@ public class Patterns {
     
     public static final String HEARTBEAT_SERVER = "PONG.";
 
+    public static final String DATA_CLIENT = "FINE. " + INFO;
+
     public static final String DATA_SERVER = "HOW'S IT GOING?";
 
-    public static final String REPORT_CLIENT = "(FINE|REPORT). I'M HERE ("
-            + COORDINATES + ") (" + COORDINATES + "), "
-            + STATUS + " AND CHARGED AT (" + BATTERY + ")%\\.";
+    public static final String REPORT_CLIENT = "REPORT. " + INFO;
 
     public static final String REPORT_SERVER = "OK, THANKS!";
 
@@ -43,10 +48,14 @@ public class Patterns {
     
     public static final String GOODBYE_ACK = "SEE YA!";
 
-    private static final String UNKNOWN = "I DON'T KNOW YOU!";
+    public static final String UNKNOWN = "I DON'T KNOW YOU!";
 
-    private static final String ALREADY_KNOWN = "I ALREADY KNOW YOU!";
+    public static final String ALREADY_KNOWN = "I ALREADY KNOW YOU!";
 
+    public static final String UNEXPECTED_MESSAGE = "UNEXPECTED MESSAGE!";
 
+    public static final String UNKNOWN_MESSAGE = "UNKNOWN MESSAGE!";
+
+    public static final String MUST_GO = "I MUST GO, BYE!";
 
 }

@@ -1,9 +1,8 @@
 package com.sikiro.vehiclegatewayrest.services.impl;
 
+import com.sikiro.vehiclegateway.models.messages.Message;
 import com.sikiro.vehiclegateway.models.vehicles.Status;
 import com.sikiro.vehiclegateway.models.vehicles.Vehicle;
-import com.sikiro.vehiclegateway.models.messages.Patterns;
-import com.sikiro.vehiclegateway.models.messages.ServerMessage;
 import com.sikiro.vehiclegatewayrest.services.VehicleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,7 +16,7 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class VehicleServiceImpl implements VehicleService {
 
-    private final ReactiveRedisOperations<String, ServerMessage> messageTemplate;
+    private final ReactiveRedisOperations<String, Message> messageTemplate;
     private final ReactiveRedisOperations<String, Vehicle> vehicleTemplate;
 
     @Value("${redis.server_messages_channel:server_messages}")
@@ -36,29 +35,29 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public void getUpdate(String id) {
-        ServerMessage serverMessage = new ServerMessage(ServerMessage.Type.REPORT,
-                Patterns.DATA_SERVER, id);
+        Message serverMessage = Message.fromServer(Message.Type.DATA,
+                Message.Type.DATA.getServer(), id);
         messageTemplate.convertAndSend(serverMessagesChannel, serverMessage).subscribe();
     }
 
     @Override
     public void sendUpdateFrequency(String id, int frequency) {
-        ServerMessage serverMessage = new ServerMessage(ServerMessage.Type.FREQUENCY,
-                String.format(Patterns.FREQUENCY_SERVER, frequency), frequency, id);
+        Message serverMessage = Message.fromServer(Message.Type.FREQUENCY,
+                String.format(Message.Type.FREQUENCY.getServer(), frequency), id);
         messageTemplate.convertAndSend(serverMessagesChannel, serverMessage).subscribe();
     }
 
     @Override
     public void sendCommand(String id, Status command) {
-        ServerMessage serverMessage = new ServerMessage(ServerMessage.Type.COMMAND,
-                String.format(Patterns.COMMAND_SERVER, command.getCommand()), command, id);
+        Message serverMessage = Message.fromServer(Message.Type.COMMAND,
+                String.format(Message.Type.COMMAND.getServer(), command.getCommand()), id);
         messageTemplate.convertAndSend(serverMessagesChannel, serverMessage).subscribe();
     }
 
     @Override
     public void disconnect(String id) {
-        ServerMessage serverMessage = new ServerMessage(ServerMessage.Type.GOODBYE_REQUEST,
-                Patterns.GOODBYE_REQUEST_STRING, id);
+        Message serverMessage = Message.fromServer(Message.Type.GOODBYE_REQUEST,
+                Message.Type.GOODBYE_REQUEST.getServer(), id);
         messageTemplate.convertAndSend(serverMessagesChannel, serverMessage).subscribe();
     }
 }

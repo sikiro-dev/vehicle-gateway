@@ -1,7 +1,7 @@
 package com.sikiro.vehiclegatewaytcp.configurations;
 
+import com.sikiro.vehiclegateway.models.messages.Message;
 import com.sikiro.vehiclegateway.models.vehicles.Vehicle;
-import com.sikiro.vehiclegateway.models.messages.ServerMessage;
 import com.sikiro.vehiclegateway.models.webhooks.Webhook;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,9 +17,9 @@ public class RedisConfigurations {
 
 
     @Bean
-    public ReactiveRedisOperations<String, ServerMessage> messageTemplate(LettuceConnectionFactory lettuceConnectionFactory) {
-        RedisSerializer<ServerMessage> valueSerializer = new Jackson2JsonRedisSerializer<>(ServerMessage.class);
-        RedisSerializationContext<String, ServerMessage> serializationContext = RedisSerializationContext.<String, ServerMessage>newSerializationContext(RedisSerializer.string())
+    public ReactiveRedisOperations<String, Message> messageTemplate(LettuceConnectionFactory lettuceConnectionFactory) {
+        RedisSerializer<Message> valueSerializer = new Jackson2JsonRedisSerializer<>(Message.class);
+        RedisSerializationContext<String, Message> serializationContext = RedisSerializationContext.<String, Message>newSerializationContext(RedisSerializer.string())
                 .value(valueSerializer)
                 .build();
         return new ReactiveRedisTemplate<>(lettuceConnectionFactory, serializationContext);

@@ -1,5 +1,6 @@
 package com.sikiro.vehiclegatewaytcp.server;
 
+import com.sikiro.vehiclegateway.models.messages.Message;
 import com.sikiro.vehiclegateway.models.vehicles.Vehicle;
 import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
@@ -10,6 +11,7 @@ import java.util.concurrent.ConcurrentMap;
 public class ChannelRepository {
 
     public static final AttributeKey<Vehicle> VEHICLE_ATTRIBUTE_KEY = AttributeKey.newInstance("VEHICLE");
+    public static final AttributeKey<Message> MESSAGE_ATTRIBUTE_KEY = AttributeKey.newInstance("MESSAGE");
 
     private final ConcurrentMap<String, Channel> channelCache = new ConcurrentHashMap<>();
 

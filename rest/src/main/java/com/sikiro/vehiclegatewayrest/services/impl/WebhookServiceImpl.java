@@ -46,4 +46,9 @@ public class WebhookServiceImpl implements WebhookService {
     public void deleteWebhook(String id) {
         webhookRepository.deleteById(id);
     }
+
+    @Override
+    public Iterable<Webhook> getWebhooks() {
+        return webhookRepository.findAll();
+    }
 }

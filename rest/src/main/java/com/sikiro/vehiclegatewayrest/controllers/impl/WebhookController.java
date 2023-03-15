@@ -23,6 +23,12 @@ public class WebhookController extends Controller {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping()
+    public ResponseEntity<Iterable<Webhook>> getWebhooks() {
+        log.info("Request get webhooks");
+        return ResponseEntity.ok(webhookService.getWebhooks());
+    }
+
     @DeleteMapping("{id}")
     public ResponseEntity<Void> deleteWebhook(@PathVariable String id) {
         log.info("Request delete webhook for: {}", id);

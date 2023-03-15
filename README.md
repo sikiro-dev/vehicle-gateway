@@ -4,7 +4,7 @@ The service is composed of two parts:
 * A `REST API` that allows to manage the vehicles and the webhooks
 * A `web socket` server that allows to receive the vehicle messages
 
-Those two parts talk to each other through a Redis server.\
+Those two parts talk to each other through a Redis server.
 
 ## REDIS
 

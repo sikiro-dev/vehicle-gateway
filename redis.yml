@@ -1,0 +1,8 @@
+version: '3.9'
+
+services:
+  redis:
+    hostname: redis
+    image: redis:7.0
+    ports:
+      - "6379:6379"

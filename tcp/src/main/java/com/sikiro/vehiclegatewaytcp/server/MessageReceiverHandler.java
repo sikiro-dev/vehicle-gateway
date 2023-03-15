@@ -60,6 +60,11 @@ public class MessageReceiverHandler extends ChannelInboundHandlerAdapter {
         if (previousMessage != null && previousMessage.getType() == Message.Type.GOODBYE_REQUEST &&
                 clientMessage.getType() != Message.Type.GOODBYE_ACK) {
             ctx.writeAndFlush(Patterns.MUST_GO + "\r\n");
+            Optional.ofNullable(ctx.channel().attr(VEHICLE_ATTRIBUTE_KEY).get()).ifPresent(
+                    vehicle -> {
+                        vehicle.setLastEvents(List.of(Event.DISCONNECTED));
+                        publisherService.publish(vehicle);
+                    });
             channelInactive(ctx);
             throw new RuntimeException("must go!");
         }

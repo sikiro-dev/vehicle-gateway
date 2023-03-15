@@ -1,16 +1,8 @@
 version: '3.9'
 
 services:
-  redis:
-    hostname: redis
-    image: redis:7.0
-    ports:
-      - "6379:6379"
-
   tcp:
     image: vehicle-gateway-tcp:latest
-    build:
-      dockerfile: tcp/Dockerfile
     ports:
       - "8090:8090"
     depends_on:
@@ -22,8 +14,6 @@ services:
 
   rest:
     image: vehicle-gateway-rest:latest
-    build:
-      dockerfile: rest/Dockerfile
     ports:
       - "8080:8080"
     depends_on:

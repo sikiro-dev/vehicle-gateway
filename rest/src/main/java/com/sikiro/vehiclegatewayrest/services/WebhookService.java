@@ -10,4 +10,6 @@ public interface WebhookService {
     void createWebhook(Webhook webhook);
 
     void deleteWebhook(String id);
+
+    Iterable<Webhook> getWebhooks();
 }

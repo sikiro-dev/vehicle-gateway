@@ -1,0 +1,30 @@
+version: '3.9'
+
+services:
+  redis:
+    hostname: redis
+    image: redis:7.0
+    ports:
+      - "6379:6379"
+
+  tcp:
+    image: vehicle-gateway-tcp:1.0.0
+    ports:
+      - "8090:8090"
+    depends_on:
+      - redis
+    environment:
+      - SPRING_DATA_REDIS_HOST=redis
+    deploy:
+      replicas: 2
+
+  rest:
+    image: vehicle-gateway-rest:1.0.0
+    ports:
+      - "8080:8080"
+    depends_on:
+      - redis
+    environment:
+      - SPRING_DATA_REDIS_HOST=redis
+    deploy:
+      replicas: 2

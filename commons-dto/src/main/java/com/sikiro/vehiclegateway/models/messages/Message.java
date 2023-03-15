@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.apache.logging.log4j.util.Strings;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -81,7 +82,7 @@ public class Message {
     public enum Type {
         HELLO(HELLO_CLIENT, HELLO_SERVER, true),
         HEARTBEAT(HEARTBEAT_CLIENT, HEARTBEAT_SERVER, true),
-        DATA(null, DATA_SERVER, false),
+        DATA(Strings.EMPTY, DATA_SERVER, false),
         FREQUENCY(FREQUENCY_CLIENT, FREQUENCY_SERVER, false),
         REPORT(REPORT_CLIENT, REPORT_SERVER, true),
         COMMAND(COMMAND_CLIENT, COMMAND_SERVER, false),

@@ -25,8 +25,7 @@ class MessageTest {
 
     @Test
     void reportMessage() {
-        String input = "FINE. I'M HERE 45.021561650 8.156484, RESTING AND CHARGED AT 42%.";
-        Message message = Message.fromClient(input);
+        String input = "FINE. I'M HERE 45.021561650 8.156484, RESTING AND CHARGED AT 42%.";Message message = Message.fromClient(input);
         Assertions.assertEquals(Message.Type.REPORT, message.getType());
         Assertions.assertEquals(45.021561650, message.getData().getLatitude());
         Assertions.assertEquals(8.156484, message.getData().getLongitude());

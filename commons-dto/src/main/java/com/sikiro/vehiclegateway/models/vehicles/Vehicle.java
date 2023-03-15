@@ -30,4 +30,7 @@ public class Vehicle {
     @JsonIgnore
     private List<Event> lastEvents;
 
+    @JsonIgnore
+    private CommandResult lastCommandResult;
+
 }

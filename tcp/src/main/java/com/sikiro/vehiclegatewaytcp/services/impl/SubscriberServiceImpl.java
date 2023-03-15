@@ -1,6 +1,6 @@
 package com.sikiro.vehiclegatewaytcp.services.impl;
 
-import com.sikiro.vehiclegateway.models.messages.ServerMessage;
+import com.sikiro.vehiclegateway.models.messages.Message;
 import com.sikiro.vehiclegatewaytcp.server.ChannelRepository;
 import com.sikiro.vehiclegatewaytcp.server.MessageSenderHandler;
 import com.sikiro.vehiclegatewaytcp.services.SubscriberService;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class SubscriberServiceImpl implements SubscriberService {
 
-    private final ReactiveRedisOperations<String, ServerMessage> messageTemplate;
+    private final ReactiveRedisOperations<String, Message> messageTemplate;
     private final ChannelRepository channelRepository;
     private final MessageSenderHandler messageSenderHandler;
 
@@ -29,7 +29,7 @@ public class SubscriberServiceImpl implements SubscriberService {
     public void subscribe() {
         messageTemplate.listenToChannel(messageChannel)
                 .map(ReactiveSubscription.Message::getMessage)
-                .filter(message -> channelRepository.containsKey(message.getDeviceId()))
+                .filter(message -> channelRepository.containsKey(message.getData().getId()))
                 .subscribe(message -> {
                     log.info("Received message: {}", message);
                     messageSenderHandler.write(message);

@@ -17,8 +17,6 @@ services:
       - redis
     environment:
       - SPRING_DATA_REDIS_HOST=redis
-    deploy:
-      replicas: 2
 
   rest:
     image: vehicle-gateway-rest:latest
@@ -30,5 +28,3 @@ services:
       - redis
     environment:
       - SPRING_DATA_REDIS_HOST=redis
-    deploy:
-      replicas: 2

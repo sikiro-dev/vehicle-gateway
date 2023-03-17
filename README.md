@@ -67,4 +67,5 @@ To run the service with docker you can use the following command:\
 `bash ./deploy.sh`\
 It will build the docker image and run the service using docker swarm (so you need to have docker swarm initialized).\
 By default, there will be 2 replicas for each service (REST and web socket), you can augment this number with docker service scale command.\
-Otherwise you can run the service with the docker-compose.yml file.
+Otherwise you can run the service with the docker-compose.yml file, in this case you should start first the redis server, than do the following command on it's container: redis-cli XGROUP CREATE vehicles vehicles $ mkstream; and then run the other two services.
+
